@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Game Assets</title>
+</head>
+<body>
+    <script>
+        function createHunterSprite(ctx, frameWidth, height) {
+            // Colors
+            const coatColor = '#483D8B';  // Dark slate blue
+            const beltColor = '#8B4513';  // Saddle brown
+            const skinColor = '#FFD39B';   // Pale skin
+            const equipmentColor = '#C0C0C0'; // Silver for equipment
+            const backpackColor = '#654321'; // Brown backpack
+
+            // Basic frame template
+            function drawHunterBase(x, y) {
+                // Backpack
+                ctx.fillStyle = backpackColor;
+                ctx.fillRect(x + 12, y + 25, 12, 35);
+
+                // Body
+                ctx.fillStyle = coatColor;
+                ctx.fillRect(x + 16, y + 20, 32, 40); // Coat body
+                
+                // Arms
+                ctx.fillRect(x + 12, y + 20, 8, 25); // Left arm
+                ctx.fillRect(x + 44, y + 20, 8, 25); // Right arm
+
+                // Head with face details
+                ctx.fillStyle = skinColor;
+                ctx.fillRect(x + 20, y + 5, 24, 24); // Head
+                
+                // Eyes
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(x + 25, y + 12, 4, 4); // Left eye
+                ctx.fillRect(x + 35, y + 12, 4, 4); // Right eye
+                
+                // Mouth
+                ctx.fillRect(x + 28, y + 20, 8, 2); // Mouth
+
+                // Belt with pouches
+                ctx.fillStyle = beltColor;
+                ctx.fillRect(x + 16, y + 45, 32, 6); // Main belt
+                ctx.fillRect(x + 20, y + 43, 8, 10); // Left pouch
+                ctx.fillRect(x + 36, y + 43, 8, 10); // Right pouch
+
+                // Ghost detector equipment
+                ctx.fillStyle = equipmentColor;
+                // Base device
+                ctx.fillRect(x + 12, y + 43, 8, 12);
+                // Antenna
+                ctx.fillRect(x + 14, y + 38, 2, 5);
+                ctx.fillRect(x + 16, y + 36, 2, 7);
+
+                // Legs
+                ctx.fillStyle = coatColor;
+                ctx.fillRect(x + 20, y + 50, 8, 20); // Left leg
+                ctx.fillRect(x + 36, y + 50, 8, 20); // Right leg
+
+                // Boots
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(x + 18, y + 70, 12, 8); // Left boot
+                ctx.fillRect(x + 34, y + 70, 12, 8); // Right boot
+            }
+
+            // Draw each frame
+            for (let i = 0; i < 9; i++) {
+                const x = i * frameWidth;
+                const y = 0;
+                drawHunterBase(x, y);
+
+                // Add frame-specific details
+                if (i <= 3) { // Left-facing frames
+                    // Ghost detector raised
+                    ctx.fillStyle = equipmentColor;
+                    ctx.fillRect(x + 8, y + 30, 12, 16);
+                    // Screen glow
+                    ctx.fillStyle = '#00FF00';
+                    ctx.globalAlpha = 0.3;
+                    ctx.fillRect(x + 10, y + 32, 8, 8);
+                    ctx.globalAlpha = 1.0;
+                } else if (i >= 5) { // Right-facing frames
+                    // Ghost detector raised
+                    ctx.fillStyle = equipmentColor;
+                    ctx.fillRect(x + 44, y + 30, 12, 16);
+                    // Screen glow
+                    ctx.fillStyle = '#00FF00';
+                    ctx.globalAlpha = 0.3;
+                    ctx.fillRect(x + 46, y + 32, 8, 8);
+                    ctx.globalAlpha = 1.0;
+                }
+            }
+        }
+
+        function createScoutSprite(ctx, frameWidth, height) {
+            // Colors
+            const robeColor = '#4B0082';  // Indigo
+            const accentColor = '#9370DB';  // Medium purple
+            const skinColor = '#FFE4E1';  // Misty rose
+            const auraColor = '#E6E6FA';  // Lavender
+            const glowColor = '#9F79EE';  // Medium purple
+
+            // Basic frame template
+            function drawScoutBase(x, y) {
+                // Spirit aura effect
+                ctx.fillStyle = auraColor;
+                ctx.globalAlpha = 0.3;
+                ctx.beginPath();
+                ctx.arc(x + 32, y + 35, 30, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Mystical robe
+                ctx.globalAlpha = 1.0;
+                ctx.fillStyle = robeColor;
+                
+                // Robe body
+                ctx.beginPath();
+                ctx.moveTo(x + 16, y + 20);
+                ctx.lineTo(x + 48, y + 20);
+                ctx.lineTo(x + 52, y + 70);
+                ctx.lineTo(x + 12, y + 70);
+                ctx.closePath();
+                ctx.fill();
+
+                // Hood
+                ctx.beginPath();
+                ctx.arc(x + 32, y + 15, 16, Math.PI, 0, false);
+                ctx.fill();
+
+                // Face in shadow
+                ctx.fillStyle = '#000000';
+                ctx.globalAlpha = 0.5;
+                ctx.fillRect(x + 24, y + 12, 16, 12);
+                ctx.globalAlpha = 1.0;
+
+                // Glowing eyes
+                ctx.fillStyle = glowColor;
+                ctx.beginPath();
+                ctx.arc(x + 28, y + 16, 2, 0, Math.PI * 2);
+                ctx.arc(x + 36, y + 16, 2, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Robe decorations
+                ctx.fillStyle = accentColor;
+                // Vertical stripes
+                ctx.fillRect(x + 20, y + 25, 2, 45);
+                ctx.fillRect(x + 42, y + 25, 2, 45);
+                // Bottom trim
+                ctx.fillRect(x + 12, y + 65, 40, 5);
+            }
+
+            // Draw each frame
+            for (let i = 0; i < 9; i++) {
+                const x = i * frameWidth;
+                const y = 0;
+                drawScoutBase(x, y);
+
+                // Spirit energy effects
+                if (i <= 3) { // Left-facing frames
+                    // Floating spirit energy
+                    ctx.fillStyle = glowColor;
+                    ctx.globalAlpha = 0.7;
+                    for (let j = 0; j < 3; j++) {
+                        ctx.beginPath();
+                        ctx.arc(x + 12 + j * 4, y + 40 + Math.sin(j) * 5, 3, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                } else if (i >= 5) { // Right-facing frames
+                    // Floating spirit energy
+                    ctx.fillStyle = glowColor;
+                    ctx.globalAlpha = 0.7;
+                    for (let j = 0; j < 3; j++) {
+                        ctx.beginPath();
+                        ctx.arc(x + 52 - j * 4, y + 40 + Math.sin(j) * 5, 3, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+                ctx.globalAlpha = 1.0;
+            }
+        }
+
+        function createGhostSprite(ctx, frameWidth, height) {
+            // Colors
+            const ghostColor = '#E6E6FA';  // Lavender base
+            const glowColor = '#B19CD9';   // Light purple glow
+            const eyeColor = '#4B0082';    // Indigo eyes
+
+            // Draw each frame
+            for (let i = 0; i < 3; i++) {
+                const x = i * frameWidth;
+                const y = 0;
+                
+                // Ghost glow effect
+                ctx.fillStyle = glowColor;
+                ctx.globalAlpha = 0.3;
+                ctx.beginPath();
+                ctx.arc(x + 32, y + 24, 28, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Ghost body
+                ctx.fillStyle = ghostColor;
+                ctx.globalAlpha = 0.7;
+                
+                // Main body - more rounded top
+                ctx.beginPath();
+                ctx.arc(x + 32, y + 24, 20, Math.PI, 0, false);
+                
+                // Wavy bottom with more pronounced curves
+                ctx.quadraticCurveTo(x + 52, y + 35, x + 48, y + 45);
+                ctx.quadraticCurveTo(x + 44, y + 55, x + 40, y + 45);
+                ctx.quadraticCurveTo(x + 36, y + 35, x + 32, y + 45);
+                ctx.quadraticCurveTo(x + 28, y + 55, x + 24, y + 45);
+                ctx.quadraticCurveTo(x + 20, y + 35, x + 16, y + 45);
+                ctx.quadraticCurveTo(x + 12, y + 35, x + 12, y + 24);
+                
+                ctx.closePath();
+                ctx.fill();
+
+                // Face details
+                ctx.globalAlpha = 1.0;
+                
+                // Eyes
+                ctx.fillStyle = eyeColor;
+                ctx.beginPath();
+                // Left eye
+                ctx.arc(x + 24, y + 20, 4, 0, Math.PI * 2);
+                // Right eye
+                ctx.arc(x + 40, y + 20, 4, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Pupils
+                ctx.fillStyle = '#FFFFFF';
+                ctx.beginPath();
+                ctx.arc(x + 25, y + 19, 1.5, 0, Math.PI * 2);
+                ctx.arc(x + 41, y + 19, 1.5, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Mouth - changes with each frame
+                ctx.fillStyle = eyeColor;
+                if (i === 0) {
+                    // Happy mouth
+                    ctx.beginPath();
+                    ctx.arc(x + 32, y + 28, 8, 0, Math.PI);
+                    ctx.stroke();
+                } else if (i === 1) {
+                    // Surprised mouth
+                    ctx.beginPath();
+                    ctx.arc(x + 32, y + 30, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    // Mischievous smile
+                    ctx.beginPath();
+                    ctx.moveTo(x + 24, y + 28);
+                    ctx.quadraticCurveTo(x + 32, y + 35, x + 40, y + 28);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        function createCoin(ctx, width, height) {
+            // Colors
+            const coinColor = '#FFD700';  // Gold
+            const shineColor = '#FFF8DC';  // Cornsilk
+
+            // Coin circle
+            ctx.fillStyle = coinColor;
+            ctx.beginPath();
+            ctx.arc(width/2, height/2, 14, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Inner circle
+            ctx.fillStyle = '#FFA500';  // Orange
+            ctx.beginPath();
+            ctx.arc(width/2, height/2, 10, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Star shape in center
+            ctx.fillStyle = coinColor;
+            ctx.beginPath();
+            const spikes = 5;
+            const outerRadius = 8;
+            const innerRadius = 4;
+            const centerX = width/2;
+            const centerY = height/2;
+
+            for (let i = 0; i < spikes * 2; i++) {
+                const radius = i % 2 === 0 ? outerRadius : innerRadius;
+                const angle = (i * Math.PI) / spikes;
+                const x = centerX + Math.cos(angle) * radius;
+                const y = centerY + Math.sin(angle) * radius;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.fill();
+
+            // Shine effect
+            ctx.fillStyle = shineColor;
+            ctx.globalAlpha = 0.5;
+            ctx.beginPath();
+            ctx.arc(width/2 - 5, height/2 - 5, 3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.globalAlpha = 1.0;
+        }
+
+        function createSpike(ctx, width, height) {
+            // Colors
+            const spikeColor = '#808080';  // Gray
+            const highlightColor = '#A9A9A9';  // Dark gray
+            const shadowColor = '#696969';   // Dim gray
+
+            // Main spike shape
+            ctx.fillStyle = spikeColor;
+            ctx.beginPath();
+            ctx.moveTo(width/2, 2);  // Top point
+            ctx.lineTo(width - 2, height - 2);  // Bottom right
+            ctx.lineTo(2, height - 2);  // Bottom left
+            ctx.closePath();
+            ctx.fill();
+
+            // Highlight
+            ctx.fillStyle = highlightColor;
+            ctx.beginPath();
+            ctx.moveTo(width/2, 2);
+            ctx.lineTo(width/2 + 8, height - 2);
+            ctx.lineTo(width/2 - 8, height - 2);
+            ctx.closePath();
+            ctx.fill();
+
+            // Shadow
+            ctx.fillStyle = shadowColor;
+            ctx.beginPath();
+            ctx.moveTo(width/2, 2);
+            ctx.lineTo(width - 2, height - 2);
+            ctx.lineTo(width - 10, height - 2);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        function createHauntedBackground(ctx, width, height) {
+            // Colors
+            const skyColor = '#2B0B30';  // Dark purple
+            const moonColor = '#FFF8DC';  // Cornsilk
+            const houseColor = '#1A061D';  // Darker purple
+            const windowColor = '#4B0082';  // Indigo
+            const groundColor = '#120414';  // Very dark purple
+
+            // Sky
+            ctx.fillStyle = skyColor;
+            ctx.fillRect(0, 0, width, height);
+
+            // Moon with glow
+            const moonX = 150;
+            const moonY = 100;
+            const moonRadius = 40;
+
+            // Moon glow
+            const gradient = ctx.createRadialGradient(
+                moonX, moonY, moonRadius,
+                moonX, moonY, moonRadius * 2
+            );
+            gradient.addColorStop(0, 'rgba(255, 248, 220, 0.3)');
+            gradient.addColorStop(1, 'rgba(255, 248, 220, 0)');
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(moonX, moonY, moonRadius * 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Moon
+            ctx.fillStyle = moonColor;
+            ctx.beginPath();
+            ctx.arc(moonX, moonY, moonRadius, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Ground
+            ctx.fillStyle = groundColor;
+            ctx.fillRect(0, height - 100, width, 100);
+
+            // Haunted House
+            ctx.fillStyle = houseColor;
+            
+            // Main house
+            ctx.fillRect(300, 200, 200, 300);
+            
+            // Roof
+            ctx.beginPath();
+            ctx.moveTo(250, 200);
+            ctx.lineTo(400, 100);
+            ctx.lineTo(550, 200);
+            ctx.closePath();
+            ctx.fill();
+
+            // Tower
+            ctx.fillRect(450, 150, 80, 350);
+            ctx.beginPath();
+            ctx.moveTo(450, 150);
+            ctx.lineTo(490, 80);
+            ctx.lineTo(530, 150);
+            ctx.closePath();
+            ctx.fill();
+
+            // Windows
+            ctx.fillStyle = windowColor;
+            // Main house windows
+            for (let i = 0; i < 2; i++) {
+                for (let j = 0; j < 3; j++) {
+                    ctx.fillRect(320 + (i * 80), 250 + (j * 70), 40, 60);
+                    // Window frame
+                    ctx.strokeStyle = houseColor;
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(320 + (i * 80), 250 + (j * 70), 40, 60);
+                }
+            }
+
+            // Tower windows
+            for (let i = 0; i < 3; i++) {
+                ctx.beginPath();
+                ctx.arc(490, 200 + (i * 70), 20, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Add some fog
+            for (let i = 0; i < 5; i++) {
+                const fogGradient = ctx.createLinearGradient(
+                    0, height - 150 + (i * 20),
+                    width, height - 150 + (i * 20)
+                );
+                fogGradient.addColorStop(0, 'rgba(230, 230, 250, 0)');
+                fogGradient.addColorStop(0.5, 'rgba(230, 230, 250, 0.1)');
+                fogGradient.addColorStop(1, 'rgba(230, 230, 250, 0)');
+                ctx.fillStyle = fogGradient;
+                ctx.fillRect(0, height - 150 + (i * 20), width, 40);
+            }
+        }
+
+        function createProjectile(ctx, width, height) {
+            // Create a glowing orb effect
+            const gradient = ctx.createRadialGradient(width/2, height/2, 0, width/2, height/2, width/2);
+            gradient.addColorStop(0, '#ffffff');  // White core
+            gradient.addColorStop(0.3, '#00ffff'); // Cyan middle
+            gradient.addColorStop(1, 'rgba(0, 255, 255, 0)'); // Transparent edge
+            
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(width/2, height/2, width/2, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Add some energy particles
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+            for (let i = 0; i < 4; i++) {
+                const angle = (Math.PI * 2 / 4) * i;
+                ctx.beginPath();
+                ctx.moveTo(width/2, height/2);
+                ctx.lineTo(
+                    width/2 + Math.cos(angle) * (width/2 - 4),
+                    height/2 + Math.sin(angle) * (height/2 - 4)
+                );
+                ctx.stroke();
+            }
+        }
+
+        const assets = [
+            { name: 'platform', width: 200, height: 32, color: '#654321', create: (ctx, w, h) => {
+                // Create a wooden platform texture
+                const platformColor = '#654321';  // Brown
+                const darkWood = '#3D2B1F';
+                
+                // Main platform
+                ctx.fillStyle = platformColor;
+                ctx.fillRect(0, 0, w, h);
+
+                // Wood grain effect
+                ctx.fillStyle = darkWood;
+                for (let i = 0; i < w; i += 20) {
+                    ctx.fillRect(i, 0, 2, h);
+                    // Add some random shorter grain lines
+                    for (let j = 0; j < 3; j++) {
+                        const x = i + Math.random() * 18;
+                        const y = Math.random() * h;
+                        const length = 5 + Math.random() * 10;
+                        ctx.fillRect(x, y, 1, length);
+                    }
+                }
+
+                // Add some nails
+                ctx.fillStyle = '#A9A9A9';
+                for (let i = 10; i < w; i += 40) {
+                    ctx.beginPath();
+                    ctx.arc(i, 5, 2, 0, Math.PI * 2);
+                    ctx.arc(i, h - 5, 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }},
+            { name: 'spike', width: 32, height: 32, create: createSpike },
+            { name: 'coin', width: 32, height: 32, create: createCoin },
+            { name: 'haunted-bg', width: 800, height: 600, create: createHauntedBackground },
+            { name: 'hunter', width: 288, height: 48, frames: 9, create: (ctx, w, h) => createHunterSprite(ctx, w/9, h) },
+            { name: 'scout', width: 288, height: 48, frames: 9, create: (ctx, w, h) => createScoutSprite(ctx, w/9, h) },
+            { name: 'ghost', width: 96, height: 32, frames: 3, create: (ctx, w, h) => createGhostSprite(ctx, w/3, h) },
+            { name: 'projectile', width: 32, height: 32, create: createProjectile }
+        ];
+
+        assets.forEach(asset => {
+            const canvas = document.createElement('canvas');
+            canvas.width = asset.width;
+            canvas.height = asset.height;
+            const ctx = canvas.getContext('2d');
+
+            if (asset.create) {
+                asset.create(ctx, asset.width, asset.height);
+            }
+
+            // Convert to PNG and download
+            const link = document.createElement('a');
+            link.download = `${asset.name}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+    </script>
+</body>
+</html> 

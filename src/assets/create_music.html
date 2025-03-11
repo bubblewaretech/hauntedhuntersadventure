@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Haunted Theme Music</title>
+</head>
+<body>
+    <button onclick="startRecording()">Generate Music</button>
+    <div id="status"></div>
+    <script>
+        let audioContext;
+        let mediaRecorder;
+        let audioChunks = [];
+
+        async function startRecording() {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = 'Generating music...';
+            
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const destination = audioContext.createMediaStreamDestination();
+            mediaRecorder = new MediaRecorder(destination.stream, {
+                mimeType: 'audio/webm;codecs=opus'
+            });
+            
+            mediaRecorder.ondataavailable = event => {
+                if (event.data.size > 0) {
+                    audioChunks.push(event.data);
+                }
+            };
+
+            mediaRecorder.onstop = async () => {
+                statusDiv.textContent = 'Processing audio...';
+                
+                if (audioChunks.length === 0) {
+                    statusDiv.textContent = 'Error: No audio data captured';
+                    return;
+                }
+
+                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                audioChunks = []; // Clear for next recording
+                
+                // Create download link
+                const audioUrl = URL.createObjectURL(audioBlob);
+                const link = document.createElement('a');
+                link.href = audioUrl;
+                link.download = 'haunted-theme.webm';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(audioUrl);
+                
+                statusDiv.textContent = 'Music downloaded! Generate again?';
+            };
+
+            try {
+                mediaRecorder.start(100); // Request data every 100ms
+                await createHauntedTheme(destination);
+                // Wait a bit after the music is done before stopping
+                await new Promise(resolve => setTimeout(resolve, 500));
+                mediaRecorder.stop();
+            } catch (error) {
+                statusDiv.textContent = 'Error: ' + error.message;
+                console.error('Error generating music:', error);
+            }
+        }
+
+        async function createHauntedTheme(recorderDestination) {
+            const now = audioContext.currentTime;
+            const duration = 16; // 16-second loop
+
+            // Create oscillators for different voices
+            const melody = audioContext.createOscillator();
+            const harmony = audioContext.createOscillator();
+            const bass = audioContext.createOscillator();
+            
+            // Create gain nodes for volume control
+            const melodyGain = audioContext.createGain();
+            const harmonyGain = audioContext.createGain();
+            const bassGain = audioContext.createGain();
+            
+            // Set oscillator types for 8-bit sound
+            melody.type = 'square';
+            harmony.type = 'square';
+            bass.type = 'triangle';
+
+            // Connect everything
+            melody.connect(melodyGain);
+            harmony.connect(harmonyGain);
+            bass.connect(bassGain);
+            
+            // Connect to both the recorder destination and audio output
+            melodyGain.connect(recorderDestination);
+            harmonyGain.connect(recorderDestination);
+            bassGain.connect(recorderDestination);
+            
+            melodyGain.connect(audioContext.destination);
+            harmonyGain.connect(audioContext.destination);
+            bassGain.connect(audioContext.destination);
+
+            // Set initial volumes
+            melodyGain.gain.setValueAtTime(0.15, now);
+            harmonyGain.gain.setValueAtTime(0.1, now);
+            bassGain.gain.setValueAtTime(0.2, now);
+
+            // Define the haunting melody (inspired by eerie NES music)
+            const melodyNotes = [
+                { note: 440, time: 0 },    // A4
+                { note: 415.3, time: 0.5 }, // Ab4
+                { note: 392, time: 1 },    // G4
+                { note: 369.99, time: 1.5 }, // F#4
+                { note: 440, time: 2 },    // A4
+                { note: 415.3, time: 2.5 }, // Ab4
+                { note: 392, time: 3 },    // G4
+                { note: 369.99, time: 3.5 }  // F#4
+            ];
+
+            const harmonyNotes = [
+                { note: 277.18, time: 0 },   // C#4
+                { note: 261.63, time: 1 },   // C4
+                { note: 246.94, time: 2 },   // B3
+                { note: 233.08, time: 3 }    // Bb3
+            ];
+
+            const bassNotes = [
+                { note: 138.59, time: 0 },   // C#3
+                { note: 130.81, time: 2 },   // C3
+                { note: 123.47, time: 4 },   // B2
+                { note: 116.54, time: 6 }    // Bb2
+            ];
+
+            // Start oscillators
+            melody.start(now);
+            harmony.start(now);
+            bass.start(now);
+
+            // Schedule the melody
+            for (let i = 0; i < duration; i += 4) {
+                melodyNotes.forEach(note => {
+                    melody.frequency.setValueAtTime(note.note, now + i + note.time);
+                    // Add vibrato for eerie effect
+                    melody.frequency.setValueAtTime(note.note + 3, now + i + note.time + 0.2);
+                    melody.frequency.setValueAtTime(note.note, now + i + note.time + 0.4);
+                });
+
+                harmonyNotes.forEach(note => {
+                    harmony.frequency.setValueAtTime(note.note, now + i + note.time);
+                });
+
+                bassNotes.forEach(note => {
+                    bass.frequency.setValueAtTime(note.note, now + i + note.time);
+                });
+            }
+
+            // Stop after duration
+            melody.stop(now + duration);
+            harmony.stop(now + duration);
+            bass.stop(now + duration);
+
+            // Return a promise that resolves when the music is done
+            return new Promise(resolve => setTimeout(resolve, duration * 1000));
+        }
+    </script>
+</body>
+</html> 
